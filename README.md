@@ -1,2 +1,2 @@
-# Certified_Kubernetes_Admin
+# Certified Kubernetes Admin
 Scripts for the cKa certification
