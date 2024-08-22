@@ -1,0 +1,79 @@
+- name: Kubernetes Setup
+  hosts: all
+  become: yes 
+  tasks:
+  - name: Update Cache
+    apt:
+     update_cache: yes
+  - name: Upgrade Everything
+    apt:
+     upgrade: dist
+  - name: Install Curl
+    apt:
+     name: curl
+     state: present
+  - name: Install Git
+    apt:
+     name: git 
+     state: present 
+  - name: Clone SVV CKA Directory
+    git:
+     repo: 'https://github.com/sandervanvugt/cka'
+     dest: /home/user/cka
+     version: master
+  - name: Run Container Script
+    command:
+     cmd: 'sudo bash /home/user/cka/setup-container.sh'
+  - name: Run Kubetools Script
+    command:
+     cmd: 'sudo bash /home/user/cka/setup-kubetools.sh'
+
+- name: Install The Cluster
+  hosts: control
+  become: yes
+  become_user: root
+  tasks:
+  - name: Kubeadm init
+    command: 
+     cmd: 'sudo kubeadm init'
+  - name: Create Kube Directories
+    file:
+     state: directory
+     path: /home/user/.kube
+     owner: user
+     group: user
+     mode: '0755'
+  - name: Copy Admin.conf with Sudo
+    command: cp /etc/kubernetes/admin.conf /home/user/.kube/config
+    args:
+     creates: /home/user/.kube/config
+
+  - name: Chown Config File
+    command: chown user:user /home/user/.kube/config
+
+- name: Network Install
+  hosts: control
+  become: yes
+  tasks: 
+  - name: Install Calico Networking Plugins
+    command: 'kubectl apply -f /home/user/cka/calico.yaml --validate=false'
+    environment:
+     KUBECONFIG: /home/user/.kube/config
+
+- name: Join Command
+  hosts: control
+  tasks:
+  - name: Create Kube Join Command Script
+    shell: kubeadm token create --print-join-command > /home/user/kube.sh
+    # Use `creates` to prevent re-running if the file already exists
+    args:
+     creates: /home/user/kube.sh
+- name: Copy Script To Workers
+  hosts: workers
+  tasks:
+  - name: Copy The Script
+    copy:
+     src: /home/user/kube.sh
+     dest: /tmp/kube.sh
+  - name: Run The Script
+    command: "bash /tmp/kube.sh"
