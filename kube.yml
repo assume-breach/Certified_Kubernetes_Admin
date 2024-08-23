@@ -1,3 +1,12 @@
+- name: Worker Node Setup
+  hosts: workers
+  tasks:
+  - name: Worker1 Hostname Setup
+    command: "hostnamectl set-hostname worker1"
+    when: ansible_hostname = worker1
+  - name: Worker2 Hostname Setup  
+    command: "hostnamectl set-hostname worker2"
+
 - name: Kubernetes Setup
   hosts: all
   become: yes 
