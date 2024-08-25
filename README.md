@@ -5,12 +5,13 @@ Step 1:
 Spin up 1 Ubuntu VM. When configuring the VM create a user named "user". This going to be your ansible/sudo user.
 
 Step 2:
-Su to root and paste this command into your terminal.
+Su to root and run these commands in your terminal.
 
 echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/user
+apt install openssh-server -y; systemctl start ssh; systemctl enable ssh
 
 Step 3:
-Run the setup.sh script.
+Clone the VM 2 times and then run the setup.sh script on your control node. You will need to get the IPs of each VM.
 
 Step 4:
 CD to /home/user/ansible and run ansible-playbook kube.yml
