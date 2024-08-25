@@ -58,9 +58,10 @@ sudo -u user ssh-keygen -t rsa -b 4096 -f /home/user/.ssh/id_rsa -N ""
 # Copy the SSH key to worker1 and worker2
 sudo -i -u user ssh-copy-id worker1
 sudo -i -u user ssh-copy-id worker2
+sudo -i -u user ssh-copy-id kubecontrol
 ssh user@worker1 "sudo hostnamectl set-hostname worker1"
 ssh user@worker2 "sudo hostnamectl set-hostname worker2"
-
+ssh user@kubecontrol "sudo hostnamectl set-hostname kubecontrol"
 
 curl -o /home/user/ansible/kube.yml https://raw.githubusercontent.com/assume-breach/Certified_Kubernetes_Admin/main/kube.yml
 cd /home/user/ansible/
