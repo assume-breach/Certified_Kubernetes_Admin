@@ -6,6 +6,13 @@ fi
 echo "Setting Hostname"
 sudo hostnamectl set-hostname kubecontrol
 echo ""
+echo "Creating LocalHost Passwordless SSH"
+ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N "" <<< ""
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+echo ""
+echo "Passwordless SSH setup is complete."
+echo ""
 echo "Installing Necessary Packages"
 apt install ansible-core curl openssh-server net-tools open-vm-tools open-vm-tools-desktop -y
 echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/user
