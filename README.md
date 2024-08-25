@@ -7,7 +7,7 @@ Spin up 1 Ubuntu VM. When configuring the VM create a user named "user". This go
 Step 2:
 Su to root and run these commands in your terminal.
 
-echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/user
+echo "user ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/user;
 apt install openssh-server -y; systemctl start ssh; systemctl enable ssh
 
 Step 3:
